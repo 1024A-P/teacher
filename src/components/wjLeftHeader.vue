@@ -196,8 +196,8 @@ export default {
   color:white;
 }
 .el-submenu__title:hover, .el-submenu__title:focus{
-  background-color:rgb(70,78,98);
-  color:white;
+  background-color:rgb(70,78,98)!important;
+  color:white!important;
   border-left:3px solid rgb(70,78,98);
 }
 .el-submenu .el-menu-item{
