@@ -162,7 +162,7 @@ export default {
 <style lang="scss">
 .el-menu{
   // background-color:rgb(23,42,57);
-  background-color:rgba(88,98,122,1);
+  background-color:#58627a!important;
   width:200px;
   border:none;
 }
@@ -173,13 +173,13 @@ export default {
 .el-menu-item:focus, .el-menu-item:hover{
   // background-color:#0c8ed9;
   background-color:rgb(70,78,98);
-  color:white;
+  color:white!important;
   border-left:3px solid rgb(70,78,98);
 }
 .el-menu-item.is-active{
   // background-color:#0c8ed9;
-  background-color:rgb(70,78,98);
-  color:white;
+  background-color:rgb(70,78,98)!important;
+  color:white!important;
   border-left:3px solid #33a1fd;
 }
 .el-menu-item i{
@@ -210,12 +210,12 @@ export default {
 }
 .el-submenu .el-menu-item.is-active{
   border-left:3px solid #33a1fd;
-  background-color:rgba(0,0,0,0.2);
+  background-color:rgba(0,0,0,0.2)!important;
 }
 .el-menu--inline{
-  background-color:#383f4e;
+  background-color:#383f4e!important;
 }
 .el-menu-item-group__title{
-  padding:0;
+  padding:0!important;
 }
 </style>

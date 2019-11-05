@@ -1,5 +1,5 @@
 <template>
-  <div class="wj-select el-input__inner">
+  <div class="wj-select">
     <span class="wj-select-label" :class="disabled?'wj-select-label-disabled':''" v-show="label">{{label}}</span>
     <el-select class="wj-select__inner" v-model="valueSelect" :size="size" :placeholder="placeholder" @change="changeVal" :disabled="disabled" :clearable="clearable">
       <el-option
@@ -79,6 +79,9 @@ export default {
   vertical-align: top;
   width: 200px;
   margin-top:1px;
+  border: 1px solid #e6e6e6;
+  height:34px;
+  border-radius:4px;
   .wj-select-label{
     display: inline-block;
     padding: 0 10px;
@@ -101,10 +104,10 @@ export default {
     height: 34px;
     line-height: 34px;
   }
-  &.el-input__inner{
-    height: 36px;
-    line-height: 32px;
-  }
+  // &.el-input__inner{
+  //   height: 36px;
+  //   line-height: 32px;
+  // }
   // 禁用
   .el-input.is-disabled {
     .el-input__inner {
