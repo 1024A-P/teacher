@@ -1,0 +1,38 @@
+// 公共标题 (前面带一竖线的标题)
+.line-title{
+  display: inline-block;
+  height: 23px;
+  line-height: 23px;
+  font-size: 23px;
+  font-weight: bold;
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 23px;
+    border-radius: 2px;
+    background-color: #33AEFD;
+    margin-right: 10px;
+    vertical-align: top;
+  }
+}
+// 右浮动
+.fr{
+  float:right;
+}
+// 左浮动
+.fl{
+  float:left;
+}
+.mgl20{
+  margin-left:20px;
+}
+.mgr20{
+  margin-right:20px;
+}
+.mgt20{
+  margin-top:20px;
+}
+.mgb20{
+  margin-bottom:20px;
+}
