@@ -57,7 +57,7 @@ export default {
 </style>
 <style lang="scss">
 .el-table thead{
-  color:rgba(51, 176, 253, 0.699);
+  color:rgba(51, 176, 253, 0.699)!important;
 }
 .el-pager li{
   font-size:12px;
