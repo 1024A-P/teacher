@@ -355,7 +355,10 @@ export default {
     // 获取学生信息数据
     getStudent (page) {
       this.testData.page = page
-      console.log(this.form)
+      // console.log(this.form)
+      this.$http.post('/api/test').then(res => {
+        console.log(res.body)
+      })
     },
     // 开启新增窗口
     openAdd () {
