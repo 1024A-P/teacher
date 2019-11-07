@@ -10,8 +10,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // 引入echart
 import echarts from 'echarts'
+// 引入公用的方法
+import utils from '@U/utils'
 Vue.use(ElementUI)
-
+Vue.use(utils)
 Vue.use(Components)
 // 全局插件
 Vue.use({

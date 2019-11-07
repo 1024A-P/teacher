@@ -101,10 +101,10 @@ export default {
 </style>
 <style lang="scss">
 .el-badge__content{
-  border: none;
+  border: none!important;
   line-height:16px;
   height:16px;
-  padding:0 5px;
+  padding:0 5px!important;
 }
 .el-dropdown-menu__item{
   line-height:42px;

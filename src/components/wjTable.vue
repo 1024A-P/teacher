@@ -1,6 +1,7 @@
 <template>
   <div class="wj-table">
     <el-table
+      v-loading="tableData.isloading"
       :data="tableData.list"
       style="width:100%;margin-bottom:15px;">
       <slot></slot>
@@ -44,6 +45,7 @@ export default {
 <style lang="scss" scoped>
 .wj-table{
   overflow:hidden;
+  position: relative;
 }
 .data-count{
   font-size:10px;
