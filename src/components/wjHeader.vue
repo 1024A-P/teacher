@@ -4,7 +4,7 @@
     <div class="header-top-left">
       <div class="index-logo">
         <!-- <img src="@A/images/teacher_logo.png"> -->
-        健康学院考试管理系统
+        健康学院考试教师系统
       </div>
     </div>
     <!-- 顶部右边个人头像 -->
@@ -13,7 +13,7 @@
       &nbsp;
       <el-dropdown trigger="hover" placement="bottom" @command="userControl" style="height:48px;">
         <span class="user-name">
-          欢迎您！林小夕老师
+          欢迎您！{{manager.name}}老师
           <el-badge :value="message" class="item" size="small"></el-badge>
           <i class="el-icon-arrow-down"></i>
         </span>
@@ -41,12 +41,41 @@ export default {
   data () {
     return {
       // 通知消息数量
-      message: 10
+      message: 10,
+      // 登录用户信息
+      manager: {}
     }
   },
   methods: {
-    userControl (test) {
-      console.log(test)
+    userControl (ty) {
+      switch (ty) {
+        case 1:
+          this.jumpUser()
+          break
+        case 2:
+          console.log('通知')
+          break
+        case 3:
+          this.deleteSession()
+          break
+        default:
+          break
+      }
+    },
+    // 跳转到个人中心并触发事件
+    jumpUser () {
+      this.$toPage('/infoManage')
+      this.$root.eventHandle.$emit('JUMP_USER_INFO')
+    },
+    // 删除session信息
+    deleteSession () {
+      sessionStorage.removeItem('managerInfo')
+      location.reload()
+    }
+  },
+  mounted () {
+    if (sessionStorage.managerInfo) {
+      this.manager = JSON.parse(sessionStorage.managerInfo)
     }
   }
 }
@@ -63,8 +92,6 @@ export default {
 .header-top-left{
   height:60px;
   float:left;
-  // width:200px;
-  // background:rgb(23,42,57);
   padding-left:10px;
   .index-logo{
     height:60px;
@@ -77,14 +104,6 @@ export default {
   float:right;
   line-height:60px;
   margin-right:20px;
-  // .user-face{
-  //   width:30px;
-  //   height:30px;
-  //   background:black;
-  //   border-radius: 50%;
-  //   display: inline-block;
-  //   vertical-align: middle;
-  // }
   .user-icon{
     font-size:18px;
   }
@@ -107,6 +126,6 @@ export default {
   padding:0 5px!important;
 }
 .el-dropdown-menu__item{
-  line-height:42px;
+  line-height:36px;
 }
 </style>

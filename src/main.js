@@ -43,5 +43,17 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  data: {
+    /*
+      用于创建页签事件派发
+      派发事件：this.$root.eventHandle.$emit('事件名', '传递的参数')
+      事件接收:
+      created:function() {
+        var self = this
+        this.$root.eventHandle.$on('事件名', function(d) {})}
+      }
+    */
+    eventHandle: new Vue()
+  }
 })

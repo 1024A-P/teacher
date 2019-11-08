@@ -8,13 +8,21 @@ const utils = (function () {
     var date = new Date()
     var month = date.getMonth() + 1
     var strDate = date.getDate()
+    var minutes = date.getMinutes()
+    var seconds = date.getSeconds()
     if (month >= 1 && month <= 9) {
       month = '0' + month
     }
     if (strDate >= 0 && strDate <= 9) {
       strDate = '0' + strDate
     }
-    var currentDate = date.getFullYear() + '-' + month + '-' + strDate + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    if (date.getMinutes() >= 0 && date.getMinutes() <= 9) {
+      minutes = '0' + date.getMinutes()
+    }
+    if (date.getSeconds() >= 0 && date.getSeconds() <= 9) {
+      seconds = '0' + date.getSeconds()
+    }
+    var currentDate = date.getFullYear() + '-' + month + '-' + strDate + ' ' + date.getHours() + ':' + minutes + ':' + seconds
     return currentDate
   }
   // 通过传入数据集以及页数和条数，可返回对应的数据集

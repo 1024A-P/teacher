@@ -4,7 +4,7 @@
     <div class="user-info-form">
       <el-form ref="form" label-width="100px" label-position="right">
         <el-form-item label="教师号" style="text-align:left">
-          <el-input v-model="userData.teacherId" placeholder="请输入教师号" style="width:85%"></el-input>
+          <el-input v-model="userData.teaId" placeholder="请输入教师号" style="width:85%"></el-input>
         </el-form-item>
         <el-form-item label="登录密码" style="text-align:left">
           <el-input v-model="userData.password" placeholder="请输入登录密码" style="width:85%"></el-input>
@@ -19,7 +19,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="出生日期" style="text-align:left">
-          <el-input v-model="userData.birthday" placeholder="请输入出生日期" style="width:85%"></el-input>
+          <el-input v-model="userData.birth" placeholder="请输入出生日期" style="width:85%"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" style="text-align:left">
           <el-input v-model="userData.phone" placeholder="请输入出生日期" style="width:85%"></el-input>
@@ -68,23 +68,30 @@ export default {
   name: 'UserInfo',
   data () {
     return {
-      userData: {
-        teacherId: '6732011',
-        password: '1023032504',
-        name: '林小夕',
-        sex: '1',
-        birthday: '1997-11-23',
-        major: '1',
-        grade: '4',
-        class: '1',
-        phone: '17612047283',
-        email: '1023032504@qq.com',
-        address: '广东省广州市天河区广汕一路221号'
-      }
+      userData: {},
+      userInfo: {}
     }
   },
   methods: {
-
+    // 获取id并通过id获取用户信息
+    getTeacher () {
+      if (sessionStorage.managerInfo) {
+        this.userInfo.id = JSON.parse(sessionStorage.managerInfo).id
+      }
+      let data = this.userInfo
+      this.$http.post('/api/manage/getTeacherInfo', data).then(res => {
+        if (res.body.msg === 'success') {
+          this.userData = res.body.data[0]
+        } else {
+          console.log('获取用户信息失败！')
+        }
+        console.log(this.userData)
+      })
+      // console.log(this.userInfo)
+    }
+  },
+  mounted () {
+    this.getTeacher()
   }
 }
 </script>

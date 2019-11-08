@@ -135,7 +135,7 @@ export default new Router({
       name: 'UserInfo',
       component: UserInfo,
       meta: {
-        keepAlive: true
+        keepAlive: false
       }
     }
   ]

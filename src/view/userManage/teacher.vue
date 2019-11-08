@@ -5,7 +5,7 @@
     <div class="teacher-info-search">
       <!-- 查询输入参数 -->
       <div class="info-input">
-        <wj-input v-model="form.trId" label="教师号" maxlength="30" placeholder="请输入教师号" clearable></wj-input>
+        <wj-input v-model="form.teaId" label="教师号" maxlength="30" placeholder="请输入教师号" clearable></wj-input>
         <wj-input class="mgl20" v-model="form.name" label="姓名" maxlength="30" placeholder="请输入姓名" clearable></wj-input>
         <wj-select class="mgl20" v-model="form.major" label="专业" :options="majorOption"></wj-select>
         <wj-select class="mgl20" v-model="form.grade" label="年级" :options="gradeOption"></wj-select>
@@ -18,16 +18,20 @@
       </div>
     </div>
     <!-- 数据表格 -->
-    <wj-table :tableData="testData" @change="getTeacher">
+    <wj-table :tableData="teaDataList" @change="pageAction">
       <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
-      <el-table-column prop="trId" label="教师号" align="center"></el-table-column>
+      <el-table-column prop="teaId" label="教师号" align="center"></el-table-column>
       <el-table-column prop="name" label="姓名" align="center"></el-table-column>
       <el-table-column label="性别" align="center">
         <template slot-scope="scoped">
           {{scoped.row.sex==='1'?'男':scoped.row.sex==='2'?'女':''}}
         </template>
       </el-table-column>
-      <el-table-column prop="major" label="执教专业" align="center"></el-table-column>
+      <el-table-column label="执教专业" align="center">
+        <template slot-scope="scoped">
+          {{handleMajor(scoped.row.major)}}
+        </template>
+      </el-table-column>
       <el-table-column label="执教年级" align="center">
         <template slot-scope="scoped">
           {{handleGrade(scoped.row.grade)}}
@@ -38,11 +42,11 @@
           {{scoped.row.class==1?'一班':scoped.row.class==2?'二班':''}}
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column prop="createTime" label="创建时间" align="center" width="200"></el-table-column>
+      <el-table-column label="操作" align="center" width="200">
         <template slot-scope="scoped">
-          <el-button size="mini" type="primary" @click="openSet">编辑</el-button>
-          <el-button size="mini" type="danger" @click="delTeacher">删除</el-button>
+          <el-button size="mini" type="primary" @click="openSet(scoped.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="delTeacher(scoped.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </wj-table>
@@ -54,9 +58,9 @@
     :before-close="closeAdd"
     size="25%">
     <!-- <wj-dialog v-show="controlAdd" @closeDislog="closeAdd" title="添加教师用户" width="500"> -->
-      <el-form ref="form" :model="form" label-width="120px" label-position="right">
+      <el-form ref="form" :model="addForm" label-width="120px" label-position="right">
         <el-form-item label="教师号" style="text-align:left">
-          <el-input v-model="addForm.stuId" placeholder="请输入教师号" style="width:85%"></el-input>
+          <el-input v-model="addForm.teaId" placeholder="请输入教师号" style="width:85%"></el-input>
         </el-form-item>
         <el-form-item label="登录密码" style="text-align:left">
           <el-input v-model="addForm.password" placeholder="请输入登录密码" style="width:85%"></el-input>
@@ -110,9 +114,9 @@
     :before-close="closeSet"
     size="25%">
     <!-- <wj-dialog v-show="controlSet" @closeDislog="closeSet" title="编辑教师用户" width="500"> -->
-      <el-form ref="form" :model="form" label-width="120px" label-position="right">
+      <el-form ref="form" :model="setForm" label-width="120px" label-position="right">
         <el-form-item label="教师号" style="text-align:left">
-          <el-input v-model="setForm.stuId" placeholder="请输入教师号" style="width:85%"></el-input>
+          <el-input v-model="setForm.teaId" placeholder="请输入教师号" style="width:85%"></el-input>
         </el-form-item>
         <el-form-item label="登录密码" style="text-align:left">
           <el-input v-model="setForm.password" placeholder="请输入登录密码" style="width:85%"></el-input>
@@ -168,22 +172,32 @@ export default {
     return {
       // 查询参数
       form: {
-        trId: '',
+        teaId: '',
         name: '',
-        major: 0,
-        grade: 0,
-        class: 0
+        major: '',
+        grade: '',
+        class: ''
       },
+      // 接口获取教师列表数据
+      teaDataList: {
+        isloading: false,
+        page: 1,
+        size: 10,
+        total: 0,
+        list: []
+      },
+      // 存储所有教师数据以便于显示以及分页
+      teaAllData: [],
       // 专业
       majorOption: [
-        {label: '全部', value: 0},
+        {label: '全部', value: ''},
         {label: '信息资源管理', value: 1},
         {label: '健康管理', value: 2},
         {label: '兼任所有专业', value: 3}
       ],
       // 年级
       gradeOption: [
-        {label: '全部', value: 0},
+        {label: '全部', value: ''},
         {label: '大四', value: 4},
         {label: '大三', value: 3},
         {label: '大二', value: 2},
@@ -192,119 +206,11 @@ export default {
       ],
       // 班级
       classOption: [
-        {label: '全部', value: 0},
+        {label: '全部', value: ''},
         {label: '一班', value: 1},
         {label: '二班', value: 2},
         {label: '兼任所有班级', value: 3}
       ],
-      testData: {
-        isloading: false,
-        page: 1,
-        size: 10,
-        total: 50,
-        list: [
-          {
-            id: 1,
-            trId: '16161051',
-            name: '张三',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 2,
-            trId: '16161021',
-            name: '李四',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 3,
-            trId: '16161051',
-            name: '张大傻',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 4,
-            trId: '16161051',
-            name: '陈大叔',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 5,
-            trId: '16161051',
-            name: '刘大婶',
-            sex: '2',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 6,
-            trId: '16161051',
-            name: '郭大儿',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 7,
-            trId: '16161051',
-            name: '诸葛亮',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 8,
-            trId: '16161051',
-            name: '司马懿',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 9,
-            trId: '16161051',
-            name: '孙尚香',
-            sex: '2',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          },
-          {
-            id: 10,
-            trId: '16161051',
-            name: '刘备',
-            sex: '1',
-            major: '信息资源管理',
-            grade: 4,
-            class: 1,
-            createTime: '2019-10-22 10:24:00'
-          }
-        ]
-      },
       /**
        * 添加教师窗口
        */
@@ -312,7 +218,7 @@ export default {
       controlAdd: false,
       // 添加所传参数
       addForm: {
-        trId: '',
+        teaId: '',
         password: '',
         sex: '1',
         name: '',
@@ -339,22 +245,39 @@ export default {
     }
   },
   methods: {
+    handleMajor (type) {
+      let result = ''
+      switch (type) {
+        case '1':
+          result = '信息资源管理'
+          break
+        case '2':
+          result = '健康管理'
+          break
+        case '3':
+          result = '兼任所有专业'
+          break
+        default:
+          break
+      }
+      return result
+    },
     handleGrade (lv) {
       let result = ''
       switch (lv) {
-        case 1:
+        case '1':
           result = '大一'
           break
-        case 2:
+        case '2':
           result = '大二'
           break
-        case 3:
+        case '3':
           result = '大三'
           break
-        case 4:
+        case '4':
           result = '大四'
           break
-        case 5:
+        case '5':
           result = '兼任有所年级'
           break
         default:
@@ -379,10 +302,23 @@ export default {
       }
       return result
     },
-    // 获取教师信息数据
-    getTeacher (page) {
-      this.testData.page = page
-      console.log(this.form)
+    // 获取并查询教师信息数据
+    getTeacher () {
+      this.teaDataList.isloading = true
+      let data = this.form
+      this.$http.post('/api/manage/teacher', data).then(res => {
+        this.teaDataList.isloading = false
+        this.teaAllData = res.body.data
+        this.teaDataList.total = res.body.data.length
+        // 处理数据集
+        this.teaDataList.list = this.$utils.getTableData(this.teaAllData, this.teaDataList.page, this.teaDataList.size)
+        // console.log(this.teaDataList)
+      })
+    },
+    // 列表分页
+    pageAction (page) {
+      this.teaDataList.page = page
+      this.teaDataList.list = this.$utils.getTableData(this.teaAllData, this.teaDataList.page, this.teaDataList.size)
     },
     // 开启新增窗口
     openAdd () {
@@ -392,7 +328,7 @@ export default {
     closeAdd () {
       this.controlAdd = false
       this.addForm = {
-        stuId: '',
+        teaId: '',
         password: '',
         sex: '1',
         name: '',
@@ -404,16 +340,37 @@ export default {
     },
     // 添加教师用户
     addStudent () {
-      console.log(this.addForm)
+      let data = this.addForm
+      data.createTime = this.$utils.getFormatDate()
+      this.$http.post('/api/manage/addTeacher', data).then(res => {
+        if (res.body.msg === 'success') {
+          this.$message.success('恭喜您！已成功添加教师用户')
+          this.getTeacher()
+          this.closeAdd()
+        } else {
+          this.$message.error('未知错误！添加用户失败')
+        }
+      })
     },
     // 开启编辑窗口
-    openSet () {
+    openSet (data) {
+      this.setForm = {
+        id: data.id,
+        teaId: data.teaId,
+        password: data.password,
+        name: data.name,
+        sex: data.sex,
+        major: data.major,
+        grade: data.grade,
+        class: data.class
+      }
       this.controlSet = true
     },
     closeSet () {
       this.controlSet = false
       this.setForm = {
-        stuId: '',
+        id: '',
+        teaId: '',
         password: '',
         sex: '1',
         name: '',
@@ -424,20 +381,42 @@ export default {
     },
     // 编辑教师用户
     setStudent () {
-      console.log(this.setForm)
+      let data = this.setForm
+      this.$http.post('/api/manage/handleTeacher', data).then(res => {
+        if (res.body.msg === 'success') {
+          this.$message.success('恭喜您！已成功修改用户信息')
+          this.getTeacher()
+          this.closeSet()
+        } else {
+          this.$message.error('未知错误！修改用户信息失败')
+        }
+      })
     },
     // 删除教师用户
-    delTeacher () {
+    delTeacher (id) {
+      let data = {
+        id: id
+      }
       this.$confirm('确定删除该教师用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message.success('删除成功!')
+        this.$http.post('/api/manage/removeTeacher', data).then(res => {
+          if (res.body.msg === 'success') {
+            this.$message.success('恭喜您！已成功删除该教师用户')
+            this.getTeacher()
+          } else {
+            this.$message.error('未知错误！删除教师用户失败')
+          }
+        })
       }).catch(() => {
-        this.$message.warning('已取消删除!')
+        console.log('已取消删除')
       })
     }
+  },
+  mounted () {
+    this.getTeacher()
   }
 }
 </script>

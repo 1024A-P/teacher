@@ -10,6 +10,7 @@ import Select from './wjSelect.vue'
 import Table from './wjTable.vue'
 import Dialog from './wjDialog.vue'
 import Card from './wjCard.vue'
+import Login from './wjLogin.vue'
 const components = [
   Header,
   LeftHeader,
@@ -17,7 +18,8 @@ const components = [
   Select,
   Table,
   Dialog,
-  Card
+  Card,
+  Login
 ]
 export default {
   install (Vue, opts = {}) {

@@ -81,7 +81,7 @@ export default {
   name: 'LeftHeader',
   data () {
     return {
-      activeIndex: '1-1'
+      activeIndex: ''
     }
   },
   methods: {
@@ -138,7 +138,51 @@ export default {
         default:
           break
       }
+    },
+    // 根据路由名字默认显示active样式
+    getRouteName () {
+      let name = this.$route.name
+      switch (name) {
+        case 'Student':
+          this.activeIndex = '1-1'
+          break
+        case 'Teacher':
+          this.activeIndex = '1-2'
+          break
+        case 'ChoiceTopic':
+          this.activeIndex = '2-1'
+          break
+        case 'JudgeTopic':
+          this.activeIndex = '2-3'
+          break
+        case 'TestPaper':
+          this.activeIndex = '3'
+          break
+        case 'ExamManage':
+          this.activeIndex = '4'
+          break
+        case 'ScoreManage':
+          this.activeIndex = '5-1'
+          break
+        case 'ScoreCount':
+          this.activeIndex = '5-2'
+          break
+        case 'UserInfo':
+          this.activeIndex = '6'
+          break
+        default:
+          break
+      }
     }
+  },
+  mounted () {
+    this.getRouteName()
+    this.$root.eventHandle.$on('JUMP_USER_INFO', () => {
+      this.activeIndex = '6'
+    })
+  },
+  beforeDestroy () {
+    this.$root.eventHandle.$off('JUMP_USER_INFO')
   }
 }
 </script>

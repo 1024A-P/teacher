@@ -1,7 +1,9 @@
 <template>
   <div id="app">
+    <!-- 登录页面 -->
+    <wj-login v-if="setLogin"></wj-login>
     <wj-header></wj-header>
-    <div class="app-middle">
+    <div class="app-middle" v-if="!setLogin">
       <wj-left-header></wj-left-header>
       <div class="right-content">
         <!-- 需要缓存 -->
@@ -18,7 +20,15 @@
 <script>
 import '@A/scss/common.scss'
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+      setLogin: true
+    }
+  },
+  mounted () {
+    if (sessionStorage.managerInfo) this.setLogin = false
+  }
 }
 </script>
 

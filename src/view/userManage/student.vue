@@ -14,7 +14,7 @@
       </div>
       <!-- 右侧按钮 -->
       <div class="search-btn fr">
-        <el-button type="primary" size="medium" @click="getStudent(1)">查询</el-button>
+        <el-button type="primary" size="medium" @click="getStudent">查询</el-button>
         <el-button type="primary" size="medium" @click="openAdd">添加</el-button>
       </div>
     </div>
@@ -253,13 +253,7 @@ export default {
     // 获取学生信息数据
     getStudent () {
       this.stuDataList.isloading = true
-      let data = {
-        stuId: this.form.stuId,
-        name: this.form.name,
-        major: this.form.major,
-        grade: this.form.grade,
-        class: this.form.class
-      }
+      let data = this.form
       // console.log(this.form)
       this.$http.post('/api/manage/student', data).then(res => {
         this.stuDataList.isloading = false
@@ -271,7 +265,6 @@ export default {
     },
     // 列表分页
     pageAction (page) {
-      console.log(page)
       this.stuDataList.page = page
       this.stuDataList.list = this.$utils.getTableData(this.stuAllData, this.stuDataList.page, this.stuDataList.size)
     },
@@ -300,7 +293,7 @@ export default {
       this.$http.post('/api/manage/addStudent', data).then(res => {
         if (res.body.msg === 'success') {
           this.$message.success('恭喜您！已成功添加学生用户')
-          this.getStudent(1)
+          this.getStudent()
           this.closeAdd()
         } else {
           this.$message.error('未知错误！添加用户失败')
@@ -332,7 +325,7 @@ export default {
       this.$http.post('/api/manage/handleStudent', data).then(res => {
         if (res.body.msg === 'success') {
           this.$message.success('恭喜您！已成功修改用户信息')
-          this.getStudent(1)
+          this.getStudent()
           this.closeSet()
         } else {
           this.$message.error('未知错误！修改用户信息失败')
@@ -352,7 +345,7 @@ export default {
         this.$http.post('/api/manage/removeStudent', data).then(res => {
           if (res.body.msg === 'success') {
             this.$message.success('恭喜您！已成功删除该学生用户')
-            this.getStudent(1)
+            this.getStudent()
           } else {
             this.$message.error('未知错误！删除学生用户失败')
           }
