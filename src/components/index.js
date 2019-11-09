@@ -11,6 +11,7 @@ import Table from './wjTable.vue'
 import Dialog from './wjDialog.vue'
 import Card from './wjCard.vue'
 import Login from './wjLogin.vue'
+import SingleChoice from './wjSingleChoice.vue'
 const components = [
   Header,
   LeftHeader,
@@ -19,7 +20,8 @@ const components = [
   Table,
   Dialog,
   Card,
-  Login
+  Login,
+  SingleChoice
 ]
 export default {
   install (Vue, opts = {}) {

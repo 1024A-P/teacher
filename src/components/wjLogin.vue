@@ -15,7 +15,7 @@
             <span class="forget-password fr">忘记密码</span>
           </div>
           <div class="login-btn">
-            <el-button type="primary" style="width:100%" @click="login">登录</el-button>
+            <el-button type="primary" style="width:100%" @click="login"><span :class="{'el-icon-loading':isloading}"></span>登录</el-button>
           </div>
         </div>
       </div>
@@ -38,7 +38,9 @@ export default {
         id: '',
         name: '',
         level: ''
-      }
+      },
+      // 点击登录执行loading图案
+      isloading: false
     }
   },
   methods: {
@@ -51,6 +53,7 @@ export default {
           this.manager.name = res.body.data[0].name
           this.manager.level = res.body.data[0].level
           this.addUserSession()
+          this.isloading = true
           location.reload()
           // console.log(this.manager)
         } else {

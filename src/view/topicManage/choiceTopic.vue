@@ -8,13 +8,13 @@
       <div class="info-input">
         <wj-input v-model="form.txtId" label="题号" maxlength="30" placeholder="请输入题号" clearable></wj-input>
         <wj-select class="mgl20" v-model="form.type" label="类型" :options="typeOption"></wj-select>
-        <wj-select class="mgl20" v-model="form.sortType" label="排序" :options="sortOption"></wj-select>
+        <!-- <wj-select class="mgl20" v-model="form.sortType" label="排序" :options="sortOption"></wj-select> -->
         <wj-select class="mgl20" v-model="form.difficulty" label="难度" :options="difficultyOption"></wj-select>
       </div>
       <!-- 右侧按钮 -->
       <div class="search-btn fr">
         <el-button type="primary" size="medium">查询</el-button>
-        <el-button type="primary" size="medium">添加</el-button>
+        <el-button type="primary" size="medium" @click="addChoice">添加</el-button>
       </div>
     </div>
     <!-- 表格数据 -->
@@ -23,7 +23,7 @@
       <el-table-column prop="txtId" label="题号" width="80" align="center"></el-table-column>
       <el-table-column label="类型" width="200" align="center">
         <template slot-scope="scoped">
-          {{scoped.row.type===1?'单选':scoped.row.type===2?'多选':scoped.row.type===3?'不定项':''}}
+          {{scoped.row.type===1?'单选':scoped.row.type===2?'不定项':''}}
         </template>
       </el-table-column>
       <el-table-column prop="title" label="题目" align="center"></el-table-column>
@@ -33,7 +33,6 @@
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="添加时间" align="center"></el-table-column>
-      <el-table-column prop="usedNum" label="使用次数" align="center" width="120"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scoped">
           <el-button size="mini" type="primary" plain>查看</el-button>
@@ -53,15 +52,14 @@ export default {
       form: {
         txtId: '',
         type: '',
-        sortType: '',
+        // sortType: '',
         difficulty: ''
       },
       // 类型
       typeOption: [
         {label: '全部', value: ''},
         {label: '单选题', value: 1},
-        {label: '多选题', value: 2},
-        {label: '不定项选择题', value: 3}
+        {label: '不定项选择题', value: 2}
       ],
       // 排序
       sortOption: [
@@ -90,8 +88,7 @@ export default {
             type: 2,
             title: '下列说法正确的有()',
             difficulty: 1,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 10
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 2,
@@ -99,17 +96,15 @@ export default {
             type: 1,
             title: '测试题目1',
             difficulty: 2,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 8
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 3,
             txtId: 'c3',
-            type: 3,
+            type: 1,
             title: '下列属于关系型数据库的是()',
             difficulty: 3,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 24
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 4,
@@ -117,8 +112,7 @@ export default {
             type: 2,
             title: '0.6332的数据类型是()',
             difficulty: 1,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 11
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 5,
@@ -126,17 +120,15 @@ export default {
             type: 1,
             title: '测试题目2',
             difficulty: 1,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 3
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 6,
             txtId: 'c6',
-            type: 3,
+            type: 2,
             title: '下面哪个流类属于面向字符的输入流()',
             difficulty: 3,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 17
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 7,
@@ -144,8 +136,7 @@ export default {
             type: 1,
             title: '下面哪些不是Thread类的方法()',
             difficulty: 1,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 18
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 8,
@@ -153,8 +144,7 @@ export default {
             type: 1,
             title: '测试题目3',
             difficulty: 2,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 4
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 9,
@@ -162,20 +152,23 @@ export default {
             type: 2,
             title: '下面关于java.lang.Exception类的说法正确的是()',
             difficulty: 3,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 6
+            createTime: '2019-10-25 00:00:00'
           },
           {
             id: 10,
             txtId: 'c10',
-            type: 3,
+            type: 2,
             title: '测试题目4',
             difficulty: 1,
-            createTime: '2019-10-25 00:00:00',
-            usedNum: 88
+            createTime: '2019-10-25 00:00:00'
           }
         ]
       }
+    }
+  },
+  methods: {
+    addChoice () {
+      this.$toPage('/addChoice')
     }
   }
 }

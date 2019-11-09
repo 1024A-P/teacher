@@ -51,12 +51,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="现居地址" style="text-align:left">
-          <el-input v-model="userData.address" placeholder="请输入现居地址" style="width:85%"></el-input>
+          <el-input type="textarea" resize="none" rows="4" v-model="userData.address" placeholder="请输入现居地址" style="width:85%"></el-input>
         </el-form-item>
         <el-form-item style="text-align:left">
           <div style="width:85%">
-            <el-button type="primary">保存</el-button>
-            <el-button>重置</el-button>
+            <el-button type="primary" @click="saveInfo">保存</el-button>
+            <el-button @click="turnBegin">重置</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -69,7 +69,9 @@ export default {
   data () {
     return {
       userData: {},
-      userInfo: {}
+      userInfo: {},
+      // 用于重置的存储数据
+      beginData: {}
     }
   },
   methods: {
@@ -82,12 +84,29 @@ export default {
       this.$http.post('/api/manage/getTeacherInfo', data).then(res => {
         if (res.body.msg === 'success') {
           this.userData = res.body.data[0]
+          // 由于指向了同一个内存地址，所以必须使两个对象不指向同一个内存地址
+          this.beginData = JSON.parse(JSON.stringify(res.body.data[0]))
         } else {
           console.log('获取用户信息失败！')
         }
-        console.log(this.userData)
       })
       // console.log(this.userInfo)
+    },
+    // 修改个人资料
+    saveInfo () {
+      let data = this.userData
+      this.$http.post('/api/manage/handleInfo', data).then(res => {
+        if (res.body.msg === 'success') {
+          this.getTeacher()
+          this.$message.success('恭喜您！已成功修改个人信息')
+        } else {
+          this.$message.error('未知错误！修改个人信息失败')
+        }
+      })
+    },
+    // 重置信息
+    turnBegin () {
+      this.userData = this.beginData
     }
   },
   mounted () {

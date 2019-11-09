@@ -1,7 +1,8 @@
 const utils = (function () {
   return {
     getFormatDate: getFormatDate,
-    getTableData: getTableData
+    getTableData: getTableData,
+    turnEng: turnEng
   }
   // 获取当前时间
   function getFormatDate () {
@@ -35,6 +36,11 @@ const utils = (function () {
     } else {
       return data
     }
+  }
+  // 传入序号返回对应的大写字母
+  function turnEng (num) {
+    let result = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    return result[num]
   }
 })()
 export default {

@@ -7,6 +7,7 @@ import Student from '@V/userManage/student'
 import Teacher from '@V/userManage/teacher'
 // 题库管理
 import Choice from '@V/topicManage/choiceTopic'
+import AddChoice from '@V/topicManage/addChoice'
 import Calculation from '@V/topicManage/calculationTopic'
 import Fill from '@V/topicManage/fillTopic'
 import Judge from '@V/topicManage/judgeTopic'
@@ -51,6 +52,15 @@ export default new Router({
       component: Choice,
       meta: {
         keepAlive: true
+      }
+    },
+    // 添加选择题
+    {
+      path: '/addChoice',
+      name: 'AddChoice',
+      component: AddChoice,
+      meta: {
+        keepAlive: false
       }
     },
     {
