@@ -7,35 +7,39 @@
       <!-- 查询输入参数 -->
       <div class="info-input">
         <wj-input v-model="form.txtId" label="题号" maxlength="30" placeholder="请输入题号" clearable></wj-input>
+        <wj-input class="mgl20" v-model="form.txtName" label="题名" maxlength="30" placeholder="请输入题目名称" clearable></wj-input>
         <wj-select class="mgl20" v-model="form.type" label="类型" :options="typeOption"></wj-select>
         <!-- <wj-select class="mgl20" v-model="form.sortType" label="排序" :options="sortOption"></wj-select> -->
-        <wj-select class="mgl20" v-model="form.difficulty" label="难度" :options="difficultyOption"></wj-select>
+        <wj-select class="mgl20" v-model="form.hardType" label="难度" :options="hardOption"></wj-select>
       </div>
       <!-- 右侧按钮 -->
       <div class="search-btn fr">
-        <el-button type="primary" size="medium">查询</el-button>
-        <el-button type="primary" size="medium" @click="addChoice">添加</el-button>
+        <el-button type="primary" size="medium" @click="getChoiceList">查询</el-button>
+        <el-button type="primary" size="medium" @click="$toPage('/addChoice')">添加</el-button>
       </div>
     </div>
     <!-- 表格数据 -->
     <!-- 数据表格 -->
-    <wj-table :tableData="testData">
+    <wj-table :tableData="choiceList" @change="pageAction">
       <el-table-column prop="txtId" label="题号" width="80" align="center"></el-table-column>
       <el-table-column label="类型" width="200" align="center">
         <template slot-scope="scoped">
-          {{scoped.row.type===1?'单选':scoped.row.type===2?'不定项':''}}
+          {{scoped.row.type==='1'?'单选':scoped.row.type==='2'?'不定项':''}}
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="题目" align="center"></el-table-column>
+      <el-table-column prop="txtName" label="题目" align="center" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column label="难度" width="200" align="center">
         <template slot-scope="scoped">
-          {{scoped.row.difficulty===1?'简单':scoped.row.difficulty===2?'一般':scoped.row.difficulty===3?'困难':''}}
+          <el-rate
+            :value="scoped.row.hardType*1"
+            disabled>
+          </el-rate>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="添加时间" align="center"></el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column prop="maker" label="制定人" align="center"></el-table-column>
+      <el-table-column prop="createTime" label="制定时间" align="center"></el-table-column>
+      <el-table-column label="操作" align="center" width="240">
         <template slot-scope="scoped">
-          <el-button size="mini" type="primary" plain>查看</el-button>
           <el-button size="mini" type="primary">编辑</el-button>
           <el-button size="mini" type="danger">删除</el-button>
         </template>
@@ -51,9 +55,10 @@ export default {
     return {
       form: {
         txtId: '',
+        txtName: '',
         type: '',
         // sortType: '',
-        difficulty: ''
+        hardType: ''
       },
       // 类型
       typeOption: [
@@ -70,12 +75,24 @@ export default {
         {label: '日期递减', value: 4}
       ],
       // 难度
-      difficultyOption: [
+      hardOption: [
         {label: '全部', value: ''},
-        {label: '简单', value: 1},
-        {label: '一般', value: 2},
-        {label: '困难', value: 3}
+        {label: '一级', value: 1},
+        {label: '二级', value: 2},
+        {label: '三级', value: 3},
+        {label: '四级', value: 4},
+        {label: '五级', value: 5}
       ],
+      // 列表数据
+      choiceList: {
+        isloading: false,
+        total: 0,
+        size: 10,
+        page: 1,
+        list: []
+      },
+      // 所有列表数据作为固定的数据集
+      choiceAllList: [],
       testData: {
         isloading: false,
         total: 50,
@@ -167,9 +184,33 @@ export default {
     }
   },
   methods: {
-    addChoice () {
-      this.$toPage('/addChoice')
+    // 获取列表数据
+    getChoiceList () {
+      this.choiceList.isloading = true
+      let data = this.form
+      this.$http.post('/api/manage/getChoiceList', data).then(res => {
+        if (res.body.msg === 'success') {
+          this.choiceList.isloading = false
+          this.choiceAllList = res.body.data
+          this.choiceList.total = res.body.data.length
+          // 处理数据集
+          this.choiceList.list = this.$utils.getTableData(this.choiceAllList, this.choiceList.page, this.choiceList.size)
+        } else {
+          this.choiceList.isloading = false
+          this.choiceAllList = []
+          this.choiceList.list = []
+          this.choiceList.total = 0
+        }
+      })
+    },
+    // 列表分页
+    pageAction (page) {
+      this.choiceList.page = page
+      this.choiceList.list = this.$utils.getTableData(this.choiceAllList, this.choiceList.page, this.choiceList.size)
     }
+  },
+  mounted () {
+    this.getChoiceList()
   }
 }
 </script>

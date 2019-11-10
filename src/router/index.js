@@ -51,7 +51,7 @@ export default new Router({
       name: 'ChoiceTopic',
       component: Choice,
       meta: {
-        keepAlive: true
+        keepAlive: false
       }
     },
     // 添加选择题

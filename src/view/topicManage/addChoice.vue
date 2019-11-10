@@ -1,6 +1,10 @@
 <template>
   <div class="add-choice-manage">
-    <div class="line-title choice-info-title">添加选择题</div>
+    <div class="choice-info-title">
+      <span @click="$toPage('/choiceManage')">
+        &lt;&lt;&nbsp;返回上一页
+      </span>
+    </div>
     <div class="add-choice-topic">
       <el-tabs v-model="activeName" type="card">
         <!-- 单选 -->
@@ -9,9 +13,7 @@
         </el-tab-pane>
         <!-- 不定项 -->
         <el-tab-pane label="不定项选择题" name="indefinite">
-          <div class="indefinite-choice">
-
-          </div>
+          <wj-Indefinite-choice></wj-Indefinite-choice>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -39,17 +41,23 @@ export default {
 }
 .choice-info-title{
   text-align: left;
-  width:100%;
+  // width:100%;
+  color:#888888;
+  line-height:24px;
+  cursor:pointer;
+  &:hover{
+    color:#409EFF;
+    // text-decoration: underline;
+  }
 }
 .add-choice-topic{
   // background:skyblue;
-  margin-top:36px;
+  margin-top:20px;
 }
 // 多选
 .indefinite-choice{
   width:100%;
   height:400px;
-  background:orange;
   text-align:left;
 }
 </style>

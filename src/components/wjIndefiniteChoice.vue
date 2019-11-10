@@ -1,7 +1,7 @@
 <template>
   <div class="single-choice">
     <div class="line-title choice-main-title">
-      添加单项选择题
+      添加不定项选择题
     </div>
     <div class="single-part">
       <div class="single-title">题 号<sup style="color:red">*</sup></div>
@@ -28,7 +28,10 @@
       <div :class="{'single-title':true,'v-top':v_top}">选 项<sup style="color:red">*</sup></div>
       <div class="single-content w300">
         <div class="option-mb" v-for="(item, index) in singleForm.options" :key="index">
-          <el-radio v-model="exAnswer" :label="index">{{$utils.turnEng(index)}}.&ensp;{{item}}</el-radio>
+          <!-- <el-radio v-model="exAnswer" :label="index">{{$utils.turnEng(index)}}.&ensp;{{item}}</el-radio> -->
+          <el-checkbox-group v-model="exAnswer" class="fl" @change="setOption">
+            <el-checkbox :label="index">{{$utils.turnEng(index)}}.&ensp;{{item}}</el-checkbox>
+          </el-checkbox-group>
           <div class="el-icon-close delete-option" @click="delOption(index)"></div>
         </div>
         <div class="add-option-list" v-show="controlSingle">
@@ -44,9 +47,9 @@
     <div class="single-part">
       <div class="single-title">答 案<sup style="color:red">*</sup></div>
       <div class="single-content">
-        <span style="color:#999999;" v-show="exAnswer==='' && singleForm.options.length<3">请完善题目内容</span>
-        <span style="color:#999999;" v-show="exAnswer==='' && singleForm.options.length>=3">请勾选答案</span>
-        <span style="color:#409EFF;font-weight:bold" v-show="exAnswer!==''">{{$utils.turnEng(exAnswer)}}</span>
+        <span style="color:#999999;" v-show="exAnswer.length===0 && singleForm.options.length<3">请完善题目内容</span>
+        <span style="color:#999999;" v-show="exAnswer.length===0 && singleForm.options.length>=3">请勾选答案</span>
+        <span style="color:#409EFF;font-weight:bold" v-show="exAnswer.length!==0">{{setAnswer()}}</span>
       </div>
     </div>
     <div class="single-part" style="margin-top:40px">
@@ -57,12 +60,12 @@
 </template>
 <script>
 export default {
-  name: 'SingleChoice',
+  name: 'IndefiniteChoice',
   data () {
     return {
       singleForm: {
         txtId: '',
-        type: 1,
+        type: 2,
         hardType: 1,
         txtName: '',
         options: [],
@@ -73,7 +76,7 @@ export default {
         createTime: ''
       },
       // 存储答案
-      exAnswer: '',
+      exAnswer: [],
       // option输入框model的值
       addSingle: '',
       // 控制添加选项的输入框显隐
@@ -113,13 +116,13 @@ export default {
     },
     // 删除选项
     delOption (index) {
-      this.exAnswer = ''
+      this.exAnswer = []
       this.singleForm.options.splice(index, 1)
       if (this.singleForm.options.length === 0) {
         this.v_top = false
-        this.exAnswer = ''
+        this.exAnswer = []
       } else if (this.singleForm.options.length < 3) {
-        this.exAnswer = ''
+        this.exAnswer = []
         this.v_top = true
       } else {
         this.v_top = true
@@ -143,7 +146,7 @@ export default {
         this.$message.warning('请补充至少三个选项')
         return ''
       }
-      if (this.exAnswer === '') {
+      if (this.exAnswer.length === 0) {
         this.$message.warning('请勾选答案')
         return ''
       }
@@ -152,7 +155,7 @@ export default {
         this.singleForm.makerId = ob.id
         this.singleForm.maker = ob.name
       }
-      this.singleForm.answer.push(this.exAnswer)
+      this.singleForm.answer = this.exAnswer
       this.singleForm.createTime = this.$utils.getFormatDate()
       let data = JSON.parse(JSON.stringify(this.singleForm))
       data.options = JSON.stringify(data.options).replace(/"/g, "'")
@@ -184,6 +187,18 @@ export default {
       }).catch(() => {
         this.$toPage('/choiceManage')
       })
+    },
+    // 处理答案显示
+    setAnswer () {
+      let result = ''
+      for (let i in this.exAnswer) {
+        result = result + this.$utils.turnEng(this.exAnswer[i]) + ' '
+      }
+      return result
+    },
+    // 答案排序
+    setOption () {
+      this.exAnswer.sort()
     }
   }
 }
@@ -229,6 +244,8 @@ export default {
 }
 .option-mb{
   margin-bottom:20px;
+  width:100%;
+  overflow:hidden;
   cursor:pointer;
   .delete-option{
     float:right;
