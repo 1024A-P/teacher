@@ -40,11 +40,20 @@
       <el-table-column prop="createTime" label="制定时间" align="center"></el-table-column>
       <el-table-column label="操作" align="center" width="240">
         <template slot-scope="scoped">
-          <el-button size="mini" type="primary">编辑</el-button>
-          <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="primary" @click="lookChoice(scoped.row)">查看</el-button>
+          <el-button size="mini" type="danger" @click="delChoice(scoped.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </wj-table>
+    <!-- 查看详情弹窗 -->
+    <el-dialog
+      style="text-align:left"
+      title="详情"
+      :visible="lookShow"
+      width="480px"
+      :before-close="lookClose">
+      <wj-choice-detail :dataList="dataList"></wj-choice-detail>
+    </el-dialog>
   </div>
 </template>
 
@@ -93,100 +102,48 @@ export default {
       },
       // 所有列表数据作为固定的数据集
       choiceAllList: [],
-      testData: {
-        isloading: false,
-        total: 50,
-        size: 10,
-        page: 1,
-        list: [
-          {
-            id: 1,
-            txtId: 'c1',
-            type: 2,
-            title: '下列说法正确的有()',
-            difficulty: 1,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 2,
-            txtId: 'c2',
-            type: 1,
-            title: '测试题目1',
-            difficulty: 2,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 3,
-            txtId: 'c3',
-            type: 1,
-            title: '下列属于关系型数据库的是()',
-            difficulty: 3,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 4,
-            txtId: 'c4',
-            type: 2,
-            title: '0.6332的数据类型是()',
-            difficulty: 1,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 5,
-            txtId: 'c5',
-            type: 1,
-            title: '测试题目2',
-            difficulty: 1,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 6,
-            txtId: 'c6',
-            type: 2,
-            title: '下面哪个流类属于面向字符的输入流()',
-            difficulty: 3,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 7,
-            txtId: 'c7',
-            type: 1,
-            title: '下面哪些不是Thread类的方法()',
-            difficulty: 1,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 8,
-            txtId: 'c8',
-            type: 1,
-            title: '测试题目3',
-            difficulty: 2,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 9,
-            txtId: 'c9',
-            type: 2,
-            title: '下面关于java.lang.Exception类的说法正确的是()',
-            difficulty: 3,
-            createTime: '2019-10-25 00:00:00'
-          },
-          {
-            id: 10,
-            txtId: 'c10',
-            type: 2,
-            title: '测试题目4',
-            difficulty: 1,
-            createTime: '2019-10-25 00:00:00'
-          }
-        ]
-      }
+      // 查看选择题详情弹窗显隐
+      lookShow: false,
+      // 查看详情数据
+      dataList: {}
     }
   },
   methods: {
+    // 查看详情
+    lookChoice (list) {
+      this.lookShow = true
+      this.dataList = list
+    },
+    // 删除选择题
+    delChoice (id) {
+      let data = {
+        id: id
+      }
+      this.$confirm('确定删除该题目?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http.post('/api/manage/removeChoice', data).then(res => {
+          if (res.body.msg === 'success') {
+            this.$message.success('恭喜您！已成功删除该题目')
+            this.getChoiceList()
+          } else {
+            this.$message.error('未知错误！删除题目失败')
+          }
+        })
+      }).catch(() => {
+        console.log('已取消删除')
+      })
+    },
+    // 弹窗关闭回调函数
+    lookClose () {
+      this.lookShow = false
+    },
     // 获取列表数据
     getChoiceList () {
       this.choiceList.isloading = true
+      this.choiceList.page = 1
       let data = this.form
       this.$http.post('/api/manage/getChoiceList', data).then(res => {
         if (res.body.msg === 'success') {

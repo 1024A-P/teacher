@@ -253,6 +253,7 @@ export default {
     // 获取学生信息数据
     getStudent () {
       this.stuDataList.isloading = true
+      this.stuDataList.page = 1
       let data = this.form
       // console.log(this.form)
       this.$http.post('/api/manage/student', data).then(res => {

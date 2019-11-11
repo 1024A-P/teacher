@@ -8,6 +8,7 @@ import Teacher from '@V/userManage/teacher'
 // 题库管理
 import Choice from '@V/topicManage/choiceTopic'
 import AddChoice from '@V/topicManage/addChoice'
+import AddJudge from '@V/topicManage/addJudge'
 import Calculation from '@V/topicManage/calculationTopic'
 import Fill from '@V/topicManage/fillTopic'
 import Judge from '@V/topicManage/judgeTopic'
@@ -34,7 +35,7 @@ export default new Router({
       component: Student,
       meta: {
         // Vue的内置组件，能在组件切换过程中将状态保留在内存中，防止重复渲染DOM
-        keepAlive: true
+        keepAlive: false
       }
     },
     {
@@ -42,7 +43,7 @@ export default new Router({
       name: 'Teacher',
       component: Teacher,
       meta: {
-        keepAlive: true
+        keepAlive: false
       }
     },
     // 题库管理
@@ -59,6 +60,15 @@ export default new Router({
       path: '/addChoice',
       name: 'AddChoice',
       component: AddChoice,
+      meta: {
+        keepAlive: false
+      }
+    },
+    // 添加判断题
+    {
+      path: '/addJudge',
+      name: 'AddJudge',
+      component: AddJudge,
       meta: {
         keepAlive: false
       }
@@ -84,7 +94,7 @@ export default new Router({
       name: 'JudgeTopic',
       component: Judge,
       meta: {
-        keepAlive: true
+        keepAlive: false
       }
     },
     {

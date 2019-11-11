@@ -13,6 +13,8 @@ import Card from './wjCard.vue'
 import Login from './wjLogin.vue'
 import SingleChoice from './wjSingleChoice.vue'
 import IndefiniteChoice from './wjIndefiniteChoice.vue'
+import ChoiceDetail from './wjChoiceDetail.vue'
+import JudgeDetail from './wjJudgeDetail.vue'
 const components = [
   Header,
   LeftHeader,
@@ -23,7 +25,9 @@ const components = [
   Card,
   Login,
   SingleChoice,
-  IndefiniteChoice
+  IndefiniteChoice,
+  ChoiceDetail,
+  JudgeDetail
 ]
 export default {
   install (Vue, opts = {}) {

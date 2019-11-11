@@ -79,13 +79,7 @@ export default {
       // 控制添加选项的输入框显隐
       controlSingle: false,
       // 控制 选项 二字置顶
-      v_top: false,
-      // 难度选项
-      hardOption: [
-        {label: '简单', value: 1},
-        {label: '一般', value: 2},
-        {label: '困难', value: 3}
-      ]
+      v_top: false
     }
   },
   methods: {

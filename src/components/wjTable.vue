@@ -8,7 +8,7 @@
     </el-table>
     <!-- 数据统计 -->
     <div class="data-count">
-      当前显示第 {{tableData.page}} 页，共有 {{tableData.total}} 条数据
+      当前显示第 {{tableData.page}} 页，总共有 {{tableData.total}} 条数据
     </div>
     <!-- 分页 -->
     <div class="page-handle">
@@ -17,6 +17,7 @@
         layout="prev, pager, next"
         :total="tableData.total"
         :page-size="tableData.size"
+        :current-page="tableData.page"
         @current-change="pageChange">
       </el-pagination>
     </div>

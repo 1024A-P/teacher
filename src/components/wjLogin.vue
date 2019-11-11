@@ -47,13 +47,13 @@ export default {
     // 登录
     login () {
       let data = this.form
+      this.isloading = true
       this.$http.post('/api/manage/login', data).then(res => {
         if (res.body.msg === 'success') {
           this.manager.id = res.body.data[0].id
           this.manager.name = res.body.data[0].name
           this.manager.level = res.body.data[0].level
           this.addUserSession()
-          this.isloading = true
           location.reload()
           // console.log(this.manager)
         } else {

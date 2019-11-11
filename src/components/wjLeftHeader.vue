@@ -142,7 +142,6 @@ export default {
     // 根据路由名字默认显示active样式
     getRouteName () {
       let name = this.$route.name
-      console.log(name)
       switch (name) {
         case 'Student':
           this.activeIndex = '1-1'
@@ -157,6 +156,9 @@ export default {
           this.activeIndex = '2-1'
           break
         case 'JudgeTopic':
+          this.activeIndex = '2-3'
+          break
+        case 'AddJudge':
           this.activeIndex = '2-3'
           break
         case 'TestPaper':

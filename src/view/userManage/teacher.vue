@@ -305,6 +305,7 @@ export default {
     // 获取并查询教师信息数据
     getTeacher () {
       this.teaDataList.isloading = true
+      this.teaDataList.page = 1
       let data = this.form
       this.$http.post('/api/manage/teacher', data).then(res => {
         this.teaDataList.isloading = false
