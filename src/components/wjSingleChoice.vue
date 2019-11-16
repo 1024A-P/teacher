@@ -152,15 +152,15 @@ export default {
       data.options = JSON.stringify(data.options).replace(/"/g, "'")
       data.answer = JSON.stringify(data.answer)
       data.usedExam = JSON.stringify(data.usedExam)
-      // console.log(data)
-      this.$http.post('/api/manage/addSingleChoice', data).then(res => {
-        console.log(res.body)
-        if (res.body.msg === 'success') {
-          this.openMessage()
-        } else {
-          this.$message.success('未知错误！添加选择题失败')
-        }
-      })
+      console.log(data)
+      // this.$http.post('/api/manage/addSingleChoice', data).then(res => {
+      //   console.log(res.body)
+      //   if (res.body.msg === 'success') {
+      //     this.openMessage()
+      //   } else {
+      //     this.$message.success('未知错误！添加选择题失败')
+      //   }
+      // })
     },
     // 打开消息弹框以便于执行下一步操作
     openMessage () {
@@ -186,7 +186,6 @@ export default {
 .single-choice{
   // min-width:400px;
   // height:400px;
-  // background:skyblue;
   text-align: left;
   overflow:hidden;
   padding:0 20px;

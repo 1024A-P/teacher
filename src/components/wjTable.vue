@@ -3,15 +3,20 @@
     <el-table
       v-loading="tableData.isloading"
       :data="tableData.list"
+      @selection-change="handleSelectionChange"
+      :max-height="maxHeight"
       style="width:100%;margin-bottom:15px;">
       <slot></slot>
     </el-table>
     <!-- 数据统计 -->
-    <div class="data-count">
+    <div class="data-count" v-if="showPage">
       当前显示第 {{tableData.page}} 页，总共有 {{tableData.total}} 条数据
     </div>
+    <div class="data-count" v-if="!showPage">
+      总共有 {{tableData.total}} 条数据
+    </div>
     <!-- 分页 -->
-    <div class="page-handle">
+    <div class="page-handle" v-if="showPage">
       <el-pagination
         background
         layout="prev, pager, next"
@@ -34,10 +39,19 @@ export default {
   methods: {
     pageChange (page) {
       this.$emit('change', page)
+    },
+    // 多选框
+    handleSelectionChange (data) {
+      this.$emit('selectionChange', data)
     }
   },
   props: {
-    tableData: Object
+    tableData: Object,
+    maxHeight: String,
+    showPage: {
+      type: Boolean,
+      default: true
+    }
   }
 }
 </script>
@@ -70,5 +84,16 @@ export default {
 }
 .el-table td, .el-table th{
   padding:10px 0;
+}
+.el-table__body-wrapper::-webkit-scrollbar{
+  width:6px;
+}
+.el-table__body-wrapper::-webkit-scrollbar-thumb{
+  border-radius:12px;
+  background:rgb(177, 175, 175);
+}
+.el-table__body-wrapper::-webkit-scrollbar-track{
+  border-radius:12px;
+  background:rgb(230, 226, 226);
 }
 </style>

@@ -45,12 +45,12 @@
       </el-submenu>
       <el-menu-item index="3">
         <i class="el-icon-collection"></i>
-        <span slot="title">试卷管理</span>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <i class="el-icon-video-play"></i>
         <span slot="title">考试管理</span>
       </el-menu-item>
+      <!-- <el-menu-item index="4">
+        <i class="el-icon-video-play"></i>
+        <span slot="title">考试管理</span>
+      </el-menu-item> -->
 
       <el-submenu index="5">
         <template slot="title">

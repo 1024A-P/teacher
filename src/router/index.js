@@ -16,6 +16,8 @@ import Discuss from '@V/topicManage/discussTopic'
 import Other from '@V/topicManage/otherTopic'
 // 试卷管理
 import Paper from '@V/paperManage/testPaper'
+import AddPaper from '@V/paperManage/addPaper'
+import PaperDetail from '@V/paperManage/paperDetail'
 // 考试管理
 import Exam from '@V/examManage/examIndex'
 // 成绩管理
@@ -119,7 +121,25 @@ export default new Router({
       name: 'TestPaper',
       component: Paper,
       meta: {
-        keepAlive: true
+        keepAlive: false
+      }
+    },
+    // 预览试卷/详情
+    {
+      path: '/paperDetail',
+      name: 'PaperDetail',
+      component: PaperDetail,
+      meta: {
+        keepAlive: false
+      }
+    },
+    // 添加试卷
+    {
+      path: '/addPaper',
+      name: 'AddPaper',
+      component: AddPaper,
+      meta: {
+        keepAlive: false
       }
     },
     // 考试管理

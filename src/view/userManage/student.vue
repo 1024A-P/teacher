@@ -20,7 +20,7 @@
     </div>
     <!-- 数据表格 -->
     <wj-table :tableData="stuDataList" @change="pageAction">
-      <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
+      <!-- <el-table-column type="index" label="序号" width="80" align="center"></el-table-column> -->
       <el-table-column prop="stuId" label="学号" align="center"></el-table-column>
       <el-table-column prop="name" label="姓名" align="center"></el-table-column>
       <el-table-column label="性别" align="center">
