@@ -60,7 +60,7 @@
         <el-menu-item-group>
           <el-menu-item index="5-1">
             <!-- <i class="el-icon-user"></i> -->
-            <span slot="title">试卷评分</span>
+            <span slot="title">考试评分</span>
           </el-menu-item>
           <el-menu-item index="5-2">
             <!-- <i class="el-icon-s-custom"></i> -->

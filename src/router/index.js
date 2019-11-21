@@ -22,6 +22,7 @@ import PaperDetail from '@V/paperManage/paperDetail'
 import Exam from '@V/examManage/examIndex'
 // 成绩管理
 import Score from '@V/scoreManage/scoreIndex'
+import SetScore from '@V/scoreManage/setScore'
 // 成绩统计
 import ScoreCount from '@V/scoreManage/scoreCount'
 // 个人中心
@@ -151,13 +152,22 @@ export default new Router({
         keepAlive: true
       }
     },
-    // 成绩管理
+    // 考试评分
     {
       path: '/scoreManage',
       name: 'ScoreManage',
       component: Score,
       meta: {
-        keepAlive: true
+        keepAlive: false
+      }
+    },
+    // 考试评分
+    {
+      path: '/setScore',
+      name: 'SetScore',
+      component: SetScore,
+      meta: {
+        keepAlive: false
       }
     },
     // 成绩统计
@@ -166,7 +176,7 @@ export default new Router({
       name: 'ScoreCount',
       component: ScoreCount,
       meta: {
-        keepAlive: true
+        keepAlive: false
       }
     },
     // 个人中心

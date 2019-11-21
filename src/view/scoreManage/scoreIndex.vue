@@ -1,31 +1,55 @@
 <template>
   <div class="score-manage">
-    <div class="line-title score-info-title">试卷评分</div>
+    <div class="line-title score-info-title">考试评分</div>
     <div class="score-info-search">
       <!-- 查询输入参数 -->
       <div class="info-input">
-        <wj-input v-model="form.name" label="姓名" maxlength="30" placeholder="请输入考生姓名" clearable></wj-input>
+        <wj-input v-model="form.stuName" label="姓名" maxlength="30" placeholder="请输入考生姓名" clearable></wj-input>
         <wj-input class="mgl20" v-model="form.stuId" label="学号" maxlength="30" placeholder="请输入考生学号" clearable></wj-input>
         <wj-input class="mgl20" v-model="form.txtId" label="试卷号" maxlength="30" placeholder="请输入试卷号" clearable></wj-input>
-        <wj-input class="mgl20" v-model="form.title" label="试卷名" maxlength="30" placeholder="请输入试卷名字" clearable></wj-input>
+        <wj-input class="mgl20" v-model="form.paperName" label="试卷名" maxlength="30" placeholder="请输入试卷名字" clearable></wj-input>
       </div>
       <!-- 右侧按钮 -->
       <div class="search-btn fr">
-        <el-button type="primary" size="medium" style="width:120px">查询</el-button>
+        <el-button type="primary" size="medium" style="width:120px" @click="getAnswerList">查询</el-button>
         <!-- <el-button type="primary" size="medium">添加</el-button> -->
       </div>
     </div>
     <!-- 考生提交试卷 -->
-    <wj-table :tableData="studentList">
-      <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
-      <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+    <wj-table :tableData="answerList" @change="pageAction">
       <el-table-column prop="stuId" label="学号" align="center"></el-table-column>
-      <el-table-column prop="txtId" label="试卷号" align="center"></el-table-column>
-      <el-table-column prop="title" label="试卷名" align="center"></el-table-column>
-      <el-table-column prop="submitTime" label="交卷时间" align="center"></el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column prop="stuName" label="姓名" align="center"></el-table-column>
+      <el-table-column label="试卷号" align="center">
         <template slot-scope="scoped">
-          <el-button type="primary" size="mini">去评分</el-button>
+          {{'暂无'}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="paperName" label="试卷名" align="center"></el-table-column>
+      <el-table-column prop="maker" label="制定人" align="center"></el-table-column>
+      <el-table-column label="耗时" align="center">
+        <template slot-scope="scoped">
+          {{scoped.row.wastedTime+'分钟'}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="finishDate" label="交卷时间" align="center" width="200"></el-table-column>
+      <el-table-column label="考试分数" align="center">
+        <template slot-scope="scoped">
+          {{scoped.row.countPoint===null?'尚未评分':scoped.row.countPoint+' 分'}}
+        </template>
+      </el-table-column>
+      <el-table-column label="详情" align="center">
+        <template slot-scope="scoped">
+          <el-button
+            type="primary"
+            size="mini"
+            v-if="scoped.row.status===1"
+            @click="jumpSetScore(scoped.row.id)">
+            评分
+          </el-button>
+          <div
+            v-else
+            v-html="handlePoints(scoped.row.countPoint)">
+          </div>
         </template>
       </el-table-column>
     </wj-table>
@@ -36,98 +60,79 @@ export default {
   name: 'ScoreIndex',
   data () {
     return {
+      managerInfo: {},
       form: {
+        makerId: 0,
         txtId: '',
         stuId: '',
-        title: '',
-        name: ''
+        stuName: '',
+        paperName: ''
       },
-      statusOption: [
-        {label: '全部', value: ''},
-        {label: '未发布', value: 1},
-        {label: '已发布', value: 2}
-      ],
-      studentList: {
+      // 答案列表数据
+      answerList: {
         isloading: false,
-        total: 50,
+        total: 0,
         size: 10,
         page: 1,
-        list: [
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          },
-          {
-            name: '陈大叔',
-            stuId: '16161088',
-            txtId: 'cx01',
-            title: 'JAVA期末考试',
-            submitTime: '2019-10-24 18:00:00'
-          }
-        ]
-      }
+        list: []
+      },
+      // 所有答案数据
+      answerAllList: []
     }
   },
   methods: {
+    // 获取答案列表数据
+    getAnswerList () {
+      this.answerList.isloading = true
+      this.form.makerId = this.managerInfo.id
+      let data = this.form
+      this.$http.post('/api/manage/getAnswerList', data).then(res => {
+        if (res.body.msg === 'success') {
+          this.answerList.isloading = false
+          this.answerAllList = res.body.data
+          this.answerList.total = res.body.data.length
+          // 处理数据集
+          this.answerList.list = this.$utils.getTableData(this.answerAllList, this.answerList.page, this.answerList.size)
+        } else {
+          console.log('获取所有答案列表失败！')
+          this.answerList.isloading = false
+          this.answerList.total = 0
+          this.answerList.list = []
+          this.answerAllList = []
+        }
+      })
+    },
+    // 列表分页
+    pageAction (page) {
+      this.stuDataList.page = page
+      this.stuDataList.list = this.$utils.getTableData(this.stuAllData, this.stuDataList.page, this.stuDataList.size)
+    },
+    // 点击评分跳转
+    jumpSetScore (id) {
+      this.$toPage('/setScore', {
+        id: id
+      })
+    },
+    // 成绩统计
+    handlePoints (points) {
+      let result = ''
+      if (points < 60) {
+        result = '<span style="color:#F56C6C;font-weight:bold">不及格</span>'
+      } else if (points >= 60 && points < 70) {
+        result = '<span style="color:#E6A23C;font-weight:bold">及格</span>'
+      } else if (points >= 70 && points < 90) {
+        result = '<span style="color:#409EFF;font-weight:bold">良好</span>'
+      } else if (points >= 90) {
+        result = '<span style="color:#67C23A;font-weight:bold">优秀</span>'
+      }
+      return result
+    }
+  },
+  mounted () {
+    if (sessionStorage.managerInfo) {
+      this.managerInfo = JSON.parse(sessionStorage.managerInfo)
+    }
+    this.getAnswerList()
   }
 }
 </script>
