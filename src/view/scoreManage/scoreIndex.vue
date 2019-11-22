@@ -104,8 +104,8 @@ export default {
     },
     // 列表分页
     pageAction (page) {
-      this.stuDataList.page = page
-      this.stuDataList.list = this.$utils.getTableData(this.stuAllData, this.stuDataList.page, this.stuDataList.size)
+      this.answerList.page = page
+      this.answerList.list = this.$utils.getTableData(this.answerAllList, this.answerList.page, this.answerList.size)
     },
     // 点击评分跳转
     jumpSetScore (id) {
