@@ -5,8 +5,8 @@
       <!-- 查询输入参数 -->
       <div class="info-input">
         <wj-input v-model="form.stuName" label="姓名" maxlength="30" placeholder="请输入考生姓名" clearable></wj-input>
-        <wj-input class="mgl20" v-model="form.stuId" label="学号" maxlength="30" placeholder="请输入考生学号" clearable></wj-input>
-        <wj-input class="mgl20" v-model="form.txtId" label="试卷号" maxlength="30" placeholder="请输入试卷号" clearable></wj-input>
+        <wj-input class="mgl20" v-model="form.studentId" label="学号" maxlength="30" placeholder="请输入考生学号" clearable></wj-input>
+        <wj-input class="mgl20" v-model="form.paperId" label="试卷号" maxlength="30" placeholder="请输入试卷号" clearable></wj-input>
         <wj-input class="mgl20" v-model="form.paperName" label="试卷名" maxlength="30" placeholder="请输入试卷名字" clearable></wj-input>
       </div>
       <!-- 右侧按钮 -->
@@ -17,13 +17,9 @@
     </div>
     <!-- 考生提交试卷 -->
     <wj-table :tableData="answerList" @change="pageAction">
-      <el-table-column prop="stuId" label="学号" align="center"></el-table-column>
+      <el-table-column prop="studentId" label="学号" align="center"></el-table-column>
       <el-table-column prop="stuName" label="姓名" align="center"></el-table-column>
-      <el-table-column label="试卷号" align="center">
-        <template slot-scope="scoped">
-          {{'暂无'}}
-        </template>
-      </el-table-column>
+      <el-table-column prop="paperId" label="试卷号" align="center"></el-table-column>
       <el-table-column prop="paperName" label="试卷名" align="center"></el-table-column>
       <el-table-column prop="maker" label="制定人" align="center"></el-table-column>
       <el-table-column label="耗时" align="center">
@@ -42,7 +38,7 @@
           <el-button
             type="primary"
             size="mini"
-            v-if="scoped.row.status===1"
+            v-if="scoped.row.status==='1'"
             @click="jumpSetScore(scoped.row.id)">
             评分
           </el-button>
@@ -63,8 +59,8 @@ export default {
       managerInfo: {},
       form: {
         makerId: 0,
-        txtId: '',
-        stuId: '',
+        paperId: '',
+        studentId: '',
         stuName: '',
         paperName: ''
       },
@@ -94,7 +90,6 @@ export default {
           // 处理数据集
           this.answerList.list = this.$utils.getTableData(this.answerAllList, this.answerList.page, this.answerList.size)
         } else {
-          console.log('获取所有答案列表失败！')
           this.answerList.isloading = false
           this.answerList.total = 0
           this.answerList.list = []
