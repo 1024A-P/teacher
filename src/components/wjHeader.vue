@@ -14,7 +14,7 @@
       <el-dropdown trigger="hover" placement="bottom" @command="userControl" style="height:48px;">
         <span class="user-name">
           欢迎您！{{manager.name}}老师
-          <el-badge :value="message" class="item" size="small"></el-badge>
+          <el-badge :value="message" class="item" size="small" v-show="message===1"></el-badge>
           <i class="el-icon-arrow-down"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -23,7 +23,7 @@
           </el-dropdown-item>
           <el-dropdown-item style="width:90px;text-align:center" :command="2">
             <span class="el-icon-message-solid" style="color:#409EFF;position:relative">&ensp;通&emsp;&nbsp;&nbsp;知&nbsp;
-              <el-badge :value="message" size="small" style="position:absolute;top:-8px;"></el-badge>
+              <el-badge :value="message" size="small" style="position:absolute;top:-8px;" v-show="message===1"></el-badge>
             </span>
           </el-dropdown-item>
           <el-dropdown-item style="width:90px;text-align:center" :command="3">
@@ -41,7 +41,8 @@ export default {
   data () {
     return {
       // 通知消息数量
-      message: 10,
+      message: 0,
+      messageNum: 0,
       // 登录用户信息
       manager: {}
     }
@@ -53,7 +54,7 @@ export default {
           this.jumpUser()
           break
         case 2:
-          console.log('通知')
+          this.messageRing()
           break
         case 3:
           this.deleteSession()
@@ -71,12 +72,49 @@ export default {
     deleteSession () {
       sessionStorage.removeItem('managerInfo')
       location.reload()
+    },
+    // 获取未评分的学生个数
+    getNotPoint () {
+      let data = {
+        makerId: this.manager.id
+      }
+      this.$http.post('/api/manage/getNotPoint', data).then(res => {
+        if (res.body.msg === 'success') {
+          this.messageNum = res.body.data.length
+          this.message = 1
+        } else {
+          this.messageNum = 0
+          this.message = 0
+        }
+      })
+    },
+    // 点击通知，动态显示
+    messageRing () {
+      if (this.message === 0) {
+        this.$alert('当前无任何通知', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            console.log('欢迎你登录本系统！')
+          }
+        })
+      } else if (this.message === 1) {
+        this.$confirm('当前有' + this.messageNum + '个同学的成绩尚未评分, 是否现在评分?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+          this.$toPage('/scoreManage')
+        }).catch(() => {
+          console.log('取消跳转')
+        })
+      }
     }
   },
   mounted () {
     if (sessionStorage.managerInfo) {
       this.manager = JSON.parse(sessionStorage.managerInfo)
     }
+    this.getNotPoint()
   }
 }
 </script>
